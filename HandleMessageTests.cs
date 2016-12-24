@@ -64,7 +64,7 @@ namespace CharlesBukowskiSlackBot
     public class HandleMessageTests
     {
         [Test]
-        public void when_handing_valid_message_directed_at_bot_it_should_send_random_quote()
+        public void when_handing_message_directed_at_bot_it_should_send_random_quote()
         {
             var botIdentifier = "U3W";
             var message = new ConsoleApplication.Program.IncomingMessage
@@ -83,7 +83,7 @@ namespace CharlesBukowskiSlackBot
         }
 
         [Test]
-        public void when_handling_valid_message_not_directed_at_bot_it_should_not_send_random_quote()
+        public void when_handling_message_not_directed_at_bot_it_should_not_send_random_quote()
         {
             var botIdentifier = "U3W";
             var message = new ConsoleApplication.Program.IncomingMessage
