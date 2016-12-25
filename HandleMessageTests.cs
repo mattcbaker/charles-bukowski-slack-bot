@@ -2,11 +2,6 @@
 
 namespace CharlesBukowskiSlackBot
 {
-    interface IGetRandomBukowskiQuote
-    {
-        string Execute();
-    }
-
     class TestableGetRandomBukowskiQuote : IGetRandomBukowskiQuote
     {
         public bool ExecuteCalled { get; set; }
@@ -16,11 +11,6 @@ namespace CharlesBukowskiSlackBot
             ExecuteCalled = true;
             return ExecuteReturnValue;
         }
-    }
-
-    interface ISendSlackMessage
-    {
-        void Execute(string channel, string message);
     }
 
     class TestableSendSlackMessage : ISendSlackMessage
@@ -34,29 +24,6 @@ namespace CharlesBukowskiSlackBot
             ExecuteCalledWithChannel = channel;
             ExecuteCalledWithMessage = message;
             ExecuteCalled = true;
-        }
-    }
-
-    class MessageHandler
-    {
-        private IGetRandomBukowskiQuote getRandomBukowskiQuote;
-        private ISendSlackMessage sendSlackMessage;
-        private string botName;
-
-        public MessageHandler(IGetRandomBukowskiQuote getRandomBukowskiQuote, ISendSlackMessage sendSlackMessage, string botName)
-        {
-            this.botName = botName;
-            this.getRandomBukowskiQuote = getRandomBukowskiQuote;
-            this.sendSlackMessage = sendSlackMessage;
-        }
-
-        public void Handle(ConsoleApplication.Program.IncomingMessage message)
-        {
-            if (message.text.Contains($"<@{botName}>"))
-            {
-                var quote = this.getRandomBukowskiQuote.Execute();
-                this.sendSlackMessage.Execute(message.channel, quote);
-            }
         }
     }
 

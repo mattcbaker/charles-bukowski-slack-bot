@@ -6,6 +6,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CharlesBukowskiSlackBot;
 
 namespace ConsoleApplication
 {
@@ -54,6 +55,15 @@ namespace ConsoleApplication
                     var messageRaw = new UTF8Encoding().GetString(messageBytes);
                     var message = Newtonsoft.Json.JsonConvert.DeserializeObject<IncomingMessage>(messageRaw);
 
+                    if (message.type == "message")
+                    {
+                        //var sender = new SendSlackMessage(webSocket);
+                        //sender.Execute(message.channel, "hey there friend");                        
+
+                        var handler = new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(webSocket), "U3K9DE8ES");
+                        handler.Handle(message);
+                    }
+
                     Console.WriteLine(messageRaw);
                 }
             }
@@ -61,7 +71,7 @@ namespace ConsoleApplication
 
         static async Task<string> GetWebsocketUrl()
         {
-            var token = "xoxb-121319484502-bdaKrTkBRlxH17McpyzDZXjq";
+            var token = "xoxb-121319484502-7ZkSMJrKt7qS37d6wg4cCjrI"; //TODO: move to app settings
             var startWebsocketUri = "https://slack.com/api/rtm.start";
             var uri = $"{startWebsocketUri}?token={token}";
 
