@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.WebSockets;
@@ -7,27 +8,29 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CharlesBukowskiSlackBot;
+using Microsoft.Extensions.Configuration;
 
 namespace ConsoleApplication
 {
     public class Program
     {
+        static public IConfigurationRoot Configuration { get; set; }
+
         class HelloRTMSession
         {
             public string url { get; set; }
         }
 
-        //TODO: move this somewhere that makes sense
-        public class IncomingMessage
-        {
-            public string type { get; set; }
-            public string user { get; set; }
-            public string text { get; set; }
-            public string channel { get; set; }
-        }
-
         public static void Main(string[] args)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+
+            Configuration = builder.Build();
+
+            Console.WriteLine(Configuration["test"]);
+
             ConnectToWebsocket().Wait();
             //Console.ReadKey(); //TODO: stop exiting
         }
@@ -57,9 +60,6 @@ namespace ConsoleApplication
 
                     if (message.type == "message")
                     {
-                        //var sender = new SendSlackMessage(webSocket);
-                        //sender.Execute(message.channel, "hey there friend");                        
-
                         var handler = new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(webSocket), "U3K9DE8ES");
                         handler.Handle(message);
                     }
@@ -71,8 +71,8 @@ namespace ConsoleApplication
 
         static async Task<string> GetWebsocketUrl()
         {
-            var token = "xoxb-121319484502-7ZkSMJrKt7qS37d6wg4cCjrI"; //TODO: move to app settings
-            var startWebsocketUri = "https://slack.com/api/rtm.start";
+            var token = Configuration["slackbot-token"];
+            var startWebsocketUri = Configuration["slack-rtm-url"];
             var uri = $"{startWebsocketUri}?token={token}";
 
             using (var client = new HttpClient())

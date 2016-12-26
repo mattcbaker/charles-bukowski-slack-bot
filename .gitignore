@@ -4,3 +4,4 @@ obj/
 *.xproj
 *.xproj.user
 *.lock.json
+appsettings.json

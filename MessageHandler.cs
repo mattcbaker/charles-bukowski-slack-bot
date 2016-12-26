@@ -1,5 +1,13 @@
 ﻿namespace CharlesBukowskiSlackBot
 {
+    public class IncomingMessage
+    {
+        public string type { get; set; }
+        public string user { get; set; }
+        public string text { get; set; }
+        public string channel { get; set; }
+    }
+
     class MessageHandler
     {
         private IGetRandomBukowskiQuote getRandomBukowskiQuote;
@@ -13,9 +21,9 @@
             this.sendSlackMessage = sendSlackMessage;
         }
 
-        public void Handle(ConsoleApplication.Program.IncomingMessage message)
+        public void Handle(IncomingMessage message)
         {
-            if (message.text.Contains($"<@{botName}>"))
+            if (message.text != null && message.text.Contains($"<@{botName}>"))
             {
                 var quote = this.getRandomBukowskiQuote.Execute();
                 this.sendSlackMessage.Execute(message.channel, quote);

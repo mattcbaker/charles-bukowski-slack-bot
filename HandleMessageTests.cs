@@ -34,7 +34,7 @@ namespace CharlesBukowskiSlackBot
         public void when_handing_message_directed_at_bot_it_should_send_random_quote()
         {
             var botIdentifier = "U3W";
-            var message = new ConsoleApplication.Program.IncomingMessage
+            var message = new IncomingMessage
             {
                 text = $"<@{botIdentifier}> some test message",
                 channel = "test-channel"
@@ -53,7 +53,7 @@ namespace CharlesBukowskiSlackBot
         public void when_handling_message_not_directed_at_bot_it_should_not_send_random_quote()
         {
             var botIdentifier = "U3W";
-            var message = new ConsoleApplication.Program.IncomingMessage
+            var message = new IncomingMessage
             {
                 text = $"<@some-other-user> some test message",
                 channel = "test-channel"
