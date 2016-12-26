@@ -3,7 +3,6 @@ using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using CharlesBukowskiSlackBot;
 using Microsoft.Extensions.Configuration;
 
 namespace ConsoleApplication
@@ -27,15 +26,7 @@ namespace ConsoleApplication
         static async Task ConnectToWebsocket()
         {
             var websocketUri = new Uri(await GetWebsocketUrl());
-            var socketConnection = new SlackSocketConnection(websocketUri);
-
-            socketConnection.OnMessage((msg) =>
-            {
-                new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(socketConnection.ClientWebSocket),
-                    Configuration["slackbot-id"]).Handle(msg);
-            });
-
-            socketConnection.Connect();
+            new SlackSocketConnection(websocketUri).Connect();
         }
 
         class HelloRTMSession

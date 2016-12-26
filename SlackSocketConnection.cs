@@ -9,34 +9,27 @@ namespace ConsoleApplication
 {
     class SlackSocketConnection
     {
-        public ClientWebSocket ClientWebSocket { get; set; }
         private Uri websocketUri;
-        private Action<IncomingMessage> onMessage;
 
         public SlackSocketConnection(Uri websocketUri)
         {
             this.websocketUri = websocketUri;
         }
 
-        public void OnMessage(Action<IncomingMessage> handler)
-        {
-            this.onMessage = handler;
-        }
-
         public async void Connect()
         {
-            ClientWebSocket = new System.Net.WebSockets.ClientWebSocket();
-            await ClientWebSocket.ConnectAsync(this.websocketUri, CancellationToken.None);
+            var websocket = new System.Net.WebSockets.ClientWebSocket();
+            await websocket.ConnectAsync(this.websocketUri, CancellationToken.None);
 
             var receiveBytes = new byte[4096];
             var receiveBuffer = new ArraySegment<byte>(receiveBytes);
-            while (ClientWebSocket.State == WebSocketState.Open)
+            while (websocket.State == WebSocketState.Open)
             {
-                var receivedMessage = await ClientWebSocket.ReceiveAsync(receiveBuffer, CancellationToken.None);
+                var receivedMessage = await websocket.ReceiveAsync(receiveBuffer, CancellationToken.None);
                 if (receivedMessage.MessageType == WebSocketMessageType.Close)
                 {
                     await
-                        ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "closing websocket",
+                        websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "closing websocket",
                             CancellationToken.None);
                 }
                 else
@@ -51,7 +44,8 @@ namespace ConsoleApplication
 
                         if (message.type == "message")
                         {
-                            onMessage(message);
+                            new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(websocket),
+                                Program.Configuration["slackbot-id"]).Handle(message);
                         }
                     }
                     catch (Exception)
