@@ -32,7 +32,6 @@ namespace ConsoleApplication
             Console.WriteLine(Configuration["test"]);
 
             ConnectToWebsocket().Wait();
-            //Console.ReadKey(); //TODO: stop exiting
         }
 
         static async Task ConnectToWebsocket()
@@ -60,7 +59,7 @@ namespace ConsoleApplication
 
                     if (message.type == "message")
                     {
-                        var handler = new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(webSocket), "U3K9DE8ES");
+                        var handler = new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(webSocket), Configuration["slackbot-id"]);
                         handler.Handle(message);
                     }
 

@@ -12,18 +12,18 @@
     {
         private IGetRandomBukowskiQuote getRandomBukowskiQuote;
         private ISendSlackMessage sendSlackMessage;
-        private string botName;
+        private string slackbotId;
 
-        public MessageHandler(IGetRandomBukowskiQuote getRandomBukowskiQuote, ISendSlackMessage sendSlackMessage, string botName)
+        public MessageHandler(IGetRandomBukowskiQuote getRandomBukowskiQuote, ISendSlackMessage sendSlackMessage, string slackbotId)
         {
-            this.botName = botName;
+            this.slackbotId = slackbotId;
             this.getRandomBukowskiQuote = getRandomBukowskiQuote;
             this.sendSlackMessage = sendSlackMessage;
         }
 
         public void Handle(IncomingMessage message)
         {
-            if (message.text != null && message.text.Contains($"<@{botName}>"))
+            if (message.text != null && message.text.Contains($"<@{slackbotId}>"))
             {
                 var quote = this.getRandomBukowskiQuote.Execute();
                 this.sendSlackMessage.Execute(message.channel, quote);
