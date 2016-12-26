@@ -54,15 +54,22 @@ namespace ConsoleApplication
                     var messageBytes = receiveBuffer.Skip(receiveBuffer.Offset).Take(receivedMessage.Count).ToArray();
 
                     var messageRaw = new UTF8Encoding().GetString(messageBytes);
-                    var message = Newtonsoft.Json.JsonConvert.DeserializeObject<IncomingMessage>(messageRaw);
-
-                    if (message.type == "message")
+                    try
                     {
-                        var handler = new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(webSocket), Configuration["slackbot-id"]);
-                        handler.Handle(message);
-                    }
+                        var message = Newtonsoft.Json.JsonConvert.DeserializeObject<IncomingMessage>(messageRaw);
 
-                    Console.WriteLine(messageRaw);
+                        if (message.type == "message")
+                        {
+                            var handler = new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(webSocket), Configuration["slackbot-id"]);
+                            handler.Handle(message);
+                        }
+
+                        Console.WriteLine(messageRaw);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Unable to process message.");
+                    }
                 }
             }
         }
