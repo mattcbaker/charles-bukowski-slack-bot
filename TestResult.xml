@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<test-run id="0" testcasecount="2" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="3" result="Passed" portable-engine-version="3.3.0.0" start-time="2016-12-26 05:28:32Z" end-time="2016-12-26 05:28:32Z" duration="0.139503">
+  <test-run id="0" testcasecount="2" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="3" result="Passed" portable-engine-version="3.3.0.0" start-time="2016-12-26 05:28:32Z" end-time="2016-12-26 05:28:32Z" duration="0.070487">
+    <test-suite type="Assembly" id="1003" name="charles-bukowski-slack-bot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" fullname="charles-bukowski-slack-bot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" runstate="Runnable" testcasecount="2" result="Passed" start-time="2016-12-26 05:28:32Z" end-time="2016-12-26 05:28:32Z" duration="0.051882" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="3">
+      <settings>
+        <setting name="WorkDirectory" value="C:\code\charles-bukowski-slack-bot" />
+      </settings>
+      <test-suite type="TestSuite" id="1004" name="CharlesBukowskiSlackBot" fullname="CharlesBukowskiSlackBot" runstate="Runnable" testcasecount="2" result="Passed" start-time="2016-12-26 05:28:32Z" end-time="2016-12-26 05:28:32Z" duration="0.045761" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="3">
+        <test-suite type="TestFixture" id="1000" name="HandleMessageTests" fullname="CharlesBukowskiSlackBot.HandleMessageTests" classname="CharlesBukowskiSlackBot.HandleMessageTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2016-12-26 05:28:32Z" end-time="2016-12-26 05:28:32Z" duration="0.042924" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="3">
+          <test-case id="1001" name="when_handing_message_directed_at_bot_it_should_send_random_quote" fullname="CharlesBukowskiSlackBot.HandleMessageTests.when_handing_message_directed_at_bot_it_should_send_random_quote" methodname="when_handing_message_directed_at_bot_it_should_send_random_quote" classname="CharlesBukowskiSlackBot.HandleMessageTests" runstate="Runnable" seed="1850075910" result="Passed" start-time="2016-12-26 05:28:32Z" end-time="2016-12-26 05:28:32Z" duration="0.010108" asserts="2" />
+          <test-case id="1002" name="when_handling_message_not_directed_at_bot_it_should_not_send_random_quote" fullname="CharlesBukowskiSlackBot.HandleMessageTests.when_handling_message_not_directed_at_bot_it_should_not_send_random_quote" methodname="when_handling_message_not_directed_at_bot_it_should_not_send_random_quote" classname="CharlesBukowskiSlackBot.HandleMessageTests" runstate="Runnable" seed="848660706" result="Passed" start-time="2016-12-26 05:28:32Z" end-time="2016-12-26 05:28:32Z" duration="0.004543" asserts="1" />
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-run>
+</test-run>
