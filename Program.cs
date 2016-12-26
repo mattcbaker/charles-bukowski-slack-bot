@@ -25,7 +25,7 @@ namespace ConsoleApplication
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.json"); //TODO: this doesn't work if app is started outside of root directory.
 
             Configuration = builder.Build();
 
