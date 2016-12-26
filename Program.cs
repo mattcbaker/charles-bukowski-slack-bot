@@ -15,11 +15,7 @@ namespace ConsoleApplication
     public class Program
     {
         static public IConfigurationRoot Configuration { get; set; }
-
-        class HelloRTMSession
-        {
-            public string url { get; set; }
-        }
+        static ManualResetEvent resetEvent = new ManualResetEvent(false);
 
         public static void Main(string[] args)
         {
@@ -28,49 +24,27 @@ namespace ConsoleApplication
                 .AddJsonFile("appsettings.json"); //TODO: this doesn't work if app is started outside of root directory.
 
             Configuration = builder.Build();
-
-            Console.WriteLine(Configuration["test"]);
-
             ConnectToWebsocket().Wait();
+            resetEvent.WaitOne();
         }
 
         static async Task ConnectToWebsocket()
         {
             var websocketUri = new Uri(await GetWebsocketUrl());
-            var webSocket = new System.Net.WebSockets.ClientWebSocket();
-            await webSocket.ConnectAsync(websocketUri, CancellationToken.None);
+            var socketConnection = new SlackSocketConnection(websocketUri);
 
-            var receiveBytes = new byte[4096];
-            var receiveBuffer = new ArraySegment<byte>(receiveBytes);
-            while (webSocket.State == WebSocketState.Open)
+            socketConnection.OnMessage((msg) =>
             {
-                var receivedMessage = await webSocket.ReceiveAsync(receiveBuffer, CancellationToken.None);
-                if (receivedMessage.MessageType == WebSocketMessageType.Close)
-                {
-                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "closing websocket", CancellationToken.None);
-                }
-                else
-                {
-                    var messageBytes = receiveBuffer.Skip(receiveBuffer.Offset).Take(receivedMessage.Count).ToArray();
+                new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(socketConnection.ClientWebSocket),
+                    Configuration["slackbot-id"]).Handle(msg);
+            });
 
-                    var messageRaw = new UTF8Encoding().GetString(messageBytes);
-                    Console.WriteLine(messageRaw);
-                    try
-                    {
-                        var message = Newtonsoft.Json.JsonConvert.DeserializeObject<IncomingMessage>(messageRaw);
+            socketConnection.Connect();
+        }
 
-                        if (message.type == "message")
-                        {
-                            var handler = new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(webSocket), Configuration["slackbot-id"]);
-                            handler.Handle(message);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        Console.WriteLine("Unable to process message.");
-                    }
-                }
-            }
+        class HelloRTMSession
+        {
+            public string url { get; set; }
         }
 
         static async Task<string> GetWebsocketUrl()
