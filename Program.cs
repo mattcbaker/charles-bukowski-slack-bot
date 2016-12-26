@@ -54,6 +54,7 @@ namespace ConsoleApplication
                     var messageBytes = receiveBuffer.Skip(receiveBuffer.Offset).Take(receivedMessage.Count).ToArray();
 
                     var messageRaw = new UTF8Encoding().GetString(messageBytes);
+                    Console.WriteLine(messageRaw);
                     try
                     {
                         var message = Newtonsoft.Json.JsonConvert.DeserializeObject<IncomingMessage>(messageRaw);
@@ -63,8 +64,6 @@ namespace ConsoleApplication
                             var handler = new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(webSocket), Configuration["slackbot-id"]);
                             handler.Handle(message);
                         }
-
-                        Console.WriteLine(messageRaw);
                     }
                     catch (Exception)
                     {
