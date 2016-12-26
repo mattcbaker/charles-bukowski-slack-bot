@@ -42,17 +42,16 @@ namespace ConsoleApplication
 
             var receiveBytes = new byte[4096];
             var receiveBuffer = new ArraySegment<byte>(receiveBytes);
-            var transmitted = string.Empty;
             while (webSocket.State == WebSocketState.Open)
             {
-                var result = await webSocket.ReceiveAsync(receiveBuffer, CancellationToken.None);
-                if (result.MessageType == WebSocketMessageType.Close)
+                var receivedMessage = await webSocket.ReceiveAsync(receiveBuffer, CancellationToken.None);
+                if (receivedMessage.MessageType == WebSocketMessageType.Close)
                 {
                     await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "closing websocket", CancellationToken.None);
                 }
                 else
                 {
-                    var messageBytes = receiveBuffer.Skip(receiveBuffer.Offset).Take(result.Count).ToArray();
+                    var messageBytes = receiveBuffer.Skip(receiveBuffer.Offset).Take(receivedMessage.Count).ToArray();
 
                     var messageRaw = new UTF8Encoding().GetString(messageBytes);
                     var message = Newtonsoft.Json.JsonConvert.DeserializeObject<IncomingMessage>(messageRaw);
