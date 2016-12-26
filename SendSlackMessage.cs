@@ -14,22 +14,14 @@ namespace CharlesBukowskiSlackBot
     {
         private ClientWebSocket webSocket;
 
-        class OutboundMessage
-        {
-            public int id { get; set; }
-            public string type { get; set; }
-            public string channel { get; set; }
-            public string text { get; set; }
-        }
-
         public SendSlackMessage(ClientWebSocket webSocket)
         {
             this.webSocket = webSocket;
         }
 
-        public async void Execute(string channel, string message) //TODO: change the name of this method
+        public async void Execute(string channel, string message)
         {
-            var outbound = new OutboundMessage
+            var outbound = new
             {
                 id = 1,
                 type = "message",
