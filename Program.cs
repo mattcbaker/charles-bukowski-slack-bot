@@ -12,6 +12,7 @@ namespace ConsoleApplication
         static public IConfigurationRoot Configuration { get; set; }
         static ManualResetEvent resetEvent = new ManualResetEvent(false);
 
+        //TODO: implement websocket reconnect, slack will sometimes close socket connection.
         public static void Main(string[] args)
         {
             var builder = new ConfigurationBuilder()
@@ -41,12 +42,10 @@ namespace ConsoleApplication
             var uri = $"{startWebsocketUri}?token={token}";
 
             using (var client = new HttpClient())
+            using (var response = await client.GetAsync(uri))
             {
-                using (var response = await client.GetAsync(uri))
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    return Newtonsoft.Json.JsonConvert.DeserializeObject<HelloRTMSession>(responseContent).url;
-                }
+                var responseContent = await response.Content.ReadAsStringAsync();
+                return Newtonsoft.Json.JsonConvert.DeserializeObject<HelloRTMSession>(responseContent).url;
             }
         }
     }
