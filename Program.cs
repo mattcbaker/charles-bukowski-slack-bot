@@ -13,6 +13,7 @@ namespace ConsoleApplication
         static ManualResetEvent resetEvent = new ManualResetEvent(false);
 
         //TODO: implement websocket reconnect, slack will sometimes close socket connection.
+        // https://github.com/howdyai/botkit/issues/104
         public static void Main(string[] args)
         {
             var builder = new ConfigurationBuilder()
