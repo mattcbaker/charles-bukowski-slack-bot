@@ -6,7 +6,7 @@ namespace CharlesBukowskiSlackBot
 {
     interface IGetRandomBukowskiQuote
     {
-        string Execute();
+        string GetNextQuote();
     }
 
     class GetRandomBukowskiQuote : IGetRandomBukowskiQuote
@@ -47,17 +47,17 @@ namespace CharlesBukowskiSlackBot
 
         private Queue<string> queue;
 
-        public string Execute()
-        {
-            var quote = queue.Dequeue();
-            queue.Enqueue(quote);
-            return quote;
-        }
-
         public GetRandomBukowskiQuote()
         {
             var shuffled = Shuffle(this.quotes);
             queue = new Queue<string>(shuffled);
+        }
+
+        public string GetNextQuote()
+        {
+            var quote = queue.Dequeue();
+            queue.Enqueue(quote);
+            return quote;
         }
 
         private string[] Shuffle(string[] array)

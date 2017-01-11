@@ -25,7 +25,7 @@
         {
             if (message.text != null && message.text.Contains($"<@{slackbotId}>"))
             {
-                var quote = this.getRandomBukowskiQuote.Execute();
+                var quote = this.getRandomBukowskiQuote.GetNextQuote();
                 this.sendSlackMessage.Execute(message.channel, quote);
             }
         }

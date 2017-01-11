@@ -4,12 +4,12 @@ namespace CharlesBukowskiSlackBot
 {
     class TestableGetRandomBukowskiQuote : IGetRandomBukowskiQuote
     {
-        public bool ExecuteCalled { get; set; }
-        public string ExecuteReturnValue { get; set; }
-        public string Execute()
+        public bool GetNextQuoteCalled { get; set; }
+        public string GetNextQuoteReturnValue { get; set; }
+        public string GetNextQuote()
         {
-            ExecuteCalled = true;
-            return ExecuteReturnValue;
+            GetNextQuoteCalled = true;
+            return GetNextQuoteReturnValue;
         }
     }
 
@@ -40,13 +40,13 @@ namespace CharlesBukowskiSlackBot
                 channel = "test-channel"
             };
             var getRandomBukowskiQuote = new TestableGetRandomBukowskiQuote();
-            getRandomBukowskiQuote.ExecuteReturnValue = "some random quote";
+            getRandomBukowskiQuote.GetNextQuoteReturnValue = "some random quote";
             var sendSlackMessage = new TestableSendSlackMessage();
 
             new MessageHandler(getRandomBukowskiQuote, sendSlackMessage, botIdentifier).Handle(message);
 
             Assert.That(sendSlackMessage.ExecuteCalledWithChannel, Is.EqualTo(message.channel));
-            Assert.That(sendSlackMessage.ExecuteCalledWithMessage, Is.EqualTo(getRandomBukowskiQuote.ExecuteReturnValue));
+            Assert.That(sendSlackMessage.ExecuteCalledWithMessage, Is.EqualTo(getRandomBukowskiQuote.GetNextQuoteReturnValue));
         }
 
         [Test]
