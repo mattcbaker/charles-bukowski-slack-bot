@@ -3,10 +3,41 @@ using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using CharlesBukowskiSlackBot;
 
 namespace ConsoleApplication
 {
+    class KeepSocketConnectionAlive
+    {
+        private ClientWebSocket webSocket;
+
+        public KeepSocketConnectionAlive(ClientWebSocket webSocket)
+        {
+            this.webSocket = webSocket;
+        }
+
+        public async void KeepAlive()
+        {
+            var ping = new
+            {
+                id = 1234,
+                type = "ping",
+                timestamp = DateTimeOffset.UtcNow
+            };
+
+            var outboundBytes = Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ping));
+            var outboundBuffer = new ArraySegment<byte>(outboundBytes);
+
+
+            while (true)
+            {
+                await webSocket.SendAsync(outboundBuffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                await Task.Delay(2000);
+            }
+        }
+    }
+
     class SlackSocketConnection
     {
         private Uri websocketUri;
@@ -20,6 +51,8 @@ namespace ConsoleApplication
         {
             var websocket = new System.Net.WebSockets.ClientWebSocket();
             await websocket.ConnectAsync(this.websocketUri, CancellationToken.None);
+
+            new KeepSocketConnectionAlive(websocket).KeepAlive();
 
             var receiveBytes = new byte[4096];
             var receiveBuffer = new ArraySegment<byte>(receiveBytes);
