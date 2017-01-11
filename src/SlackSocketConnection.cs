@@ -56,6 +56,11 @@ namespace ConsoleApplication
 
             var receiveBytes = new byte[4096];
             var receiveBuffer = new ArraySegment<byte>(receiveBytes);
+
+            //TODO: move the handling out to the main thread
+            var handler = new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(websocket),
+                Program.Configuration["slackbot-id"]);
+
             while (websocket.State == WebSocketState.Open)
             {
                 var receivedMessage = await websocket.ReceiveAsync(receiveBuffer, CancellationToken.None);
@@ -77,8 +82,7 @@ namespace ConsoleApplication
 
                         if (message.type == "message")
                         {
-                            new MessageHandler(new GetRandomBukowskiQuote(), new SendSlackMessage(websocket),
-                                Program.Configuration["slackbot-id"]).Handle(message);
+                            handler.Handle(message);
                         }
                     }
                     catch (Exception)

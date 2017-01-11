@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace CharlesBukowskiSlackBot
@@ -44,9 +45,34 @@ namespace CharlesBukowskiSlackBot
             "There\'s a bluebird in my heart that wants to get out\r\nbut I\'m too tough for him,\r\nI say, stay in there, I\'m not going to let anybody see you."
         };
 
+        private Queue<string> queue;
+
         public string Execute()
         {
-            return quotes[new Random().Next(0, quotes.Length)];
+            var quote = queue.Dequeue();
+            queue.Enqueue(quote);
+            return quote;
+        }
+
+        public GetRandomBukowskiQuote()
+        {
+            var shuffled = Shuffle(this.quotes);
+            queue = new Queue<string>(shuffled);
+        }
+
+        private string[] Shuffle(string[] array)
+        {
+            var random = new Random();
+            var n = array.Length;
+            while (n > 1)
+            {
+                var indexToSwap = random.Next(n--);
+                var swap = array[indexToSwap];
+                array[indexToSwap] = array[n];
+                array[n] = swap;
+            }
+
+            return array;
         }
     }
 }
