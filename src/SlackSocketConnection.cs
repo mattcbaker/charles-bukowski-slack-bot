@@ -19,19 +19,18 @@ namespace ConsoleApplication
 
         public async void KeepAlive()
         {
-            var ping = new
-            {
-                id = 1234,
-                type = "ping",
-                timestamp = DateTimeOffset.UtcNow
-            };
-
-            var outboundBytes = Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ping));
-            var outboundBuffer = new ArraySegment<byte>(outboundBytes);
-
-
             while (true)
             {
+                var ping = new
+                {
+                    id = 1234,
+                    type = "ping",
+                    timestamp = DateTimeOffset.UtcNow
+                };
+
+                var outboundBytes = Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ping));
+                var outboundBuffer = new ArraySegment<byte>(outboundBytes);
+
                 await webSocket.SendAsync(outboundBuffer, WebSocketMessageType.Text, true, CancellationToken.None);
                 await Task.Delay(2000);
             }
