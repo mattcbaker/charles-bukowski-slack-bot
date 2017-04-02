@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 
 namespace CharlesBukowskiSlackBot
 {
@@ -27,10 +27,9 @@ namespace CharlesBukowskiSlackBot
         }
     }
 
-    [TestFixture]
     public class HandleMessageTests
     {
-        [Test]
+        [Fact]
         public void when_handing_message_directed_at_bot_it_should_send_random_quote()
         {
             var botIdentifier = "U3W";
@@ -45,11 +44,11 @@ namespace CharlesBukowskiSlackBot
 
             new MessageHandler(getRandomBukowskiQuote, sendSlackMessage, botIdentifier).Handle(message);
 
-            Assert.That(sendSlackMessage.ExecuteCalledWithChannel, Is.EqualTo(message.channel));
-            Assert.That(sendSlackMessage.ExecuteCalledWithMessage, Is.EqualTo(getRandomBukowskiQuote.GetNextQuoteReturnValue));
+            Assert.Equal(sendSlackMessage.ExecuteCalledWithChannel, message.channel);
+            Assert.Equal(sendSlackMessage.ExecuteCalledWithMessage, getRandomBukowskiQuote.GetNextQuoteReturnValue);
         }
 
-        [Test]
+        [Fact]
         public void when_handling_message_not_directed_at_bot_it_should_not_send_random_quote()
         {
             var botIdentifier = "U3W";
@@ -63,7 +62,7 @@ namespace CharlesBukowskiSlackBot
 
             new MessageHandler(getRandomBukowskiQuote, sendSlackMessage, botIdentifier).Handle(message);
 
-            Assert.That(sendSlackMessage.ExecuteCalled, Is.EqualTo(false));
+            Assert.False(sendSlackMessage.ExecuteCalled);
         }
     }
 }
