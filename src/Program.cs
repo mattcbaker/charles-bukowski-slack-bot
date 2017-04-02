@@ -4,49 +4,37 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Slackbot;
+using System.Linq;
 
-namespace ConsoleApplication
+namespace CharlesBukowskiSlackBot
 {
     public class Program
     {
         static public IConfigurationRoot Configuration { get; set; }
-        static ManualResetEvent resetEvent = new ManualResetEvent(false);
 
-        //TODO: implement websocket reconnect, slack will sometimes close socket connection.
-        // https://github.com/howdyai/botkit/issues/104
         public static void Main(string[] args)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json"); //TODO: this doesn't work if app is started outside of root directory.
+                .AddJsonFile("appsettings.json");
 
             Configuration = builder.Build();
-            ConnectToWebsocket().Wait();
-            resetEvent.WaitOne();
-        }
 
-        static async Task ConnectToWebsocket()
-        {
-            var websocketUri = new Uri(await GetWebsocketUrl());
-            new SlackSocketConnection(websocketUri).Connect();
-        }
+            var bot = new Bot(Configuration["slackbot-token"], "charles-bukowski");
+            var getRandomBukowskiQuote = new GetRandomBukowskiQuote();
 
-        class HelloRTMSession
-        {
-            public string url { get; set; }
-        }
-
-        static async Task<string> GetWebsocketUrl()
-        {
-            var token = Configuration["slackbot-token"];
-            var startWebsocketUri = Configuration["slack-rtm-url"];
-            var uri = $"{startWebsocketUri}?token={token}";
-
-            using (var client = new HttpClient())
-            using (var response = await client.GetAsync(uri))
+            bot.OnMessage += (sender, message) =>
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                return Newtonsoft.Json.JsonConvert.DeserializeObject<HelloRTMSession>(responseContent).url;
+                Console.WriteLine($"{DateTimeOffset.UtcNow}: {message.RawMessage}");
+                if (message.MentionedUsers.Any(user => user == "charles-bukowski"))
+                {
+                    bot.SendMessage(message.Channel, getRandomBukowskiQuote.GetNextQuote());
+                }
+            };
+
+            while(true){
+                Console.ReadKey();
             }
         }
     }
